@@ -47,7 +47,7 @@ public class Doc implements Comparable<Doc> {
         textReader.close();
     }
 
-    public double getTermFreq(String word) {
+    public double getTermFrequency(String word) {
         if (termFreq.containsKey(word)) {
             return termFreq.get(word);
         } else {

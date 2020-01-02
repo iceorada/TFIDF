@@ -15,15 +15,12 @@ import static java.util.stream.Collectors.toMap;
 public class Main {
 
     public static void main(String[] args) {
-        //English
-//        String topic_set = "topics-train_en.xml";
-//        String document_set = "documents_en.lst";
-//        String run_type = "run-0_en";
 
-        // Czech
-        String topic_set = "topics-train_cs.xml";
-        String document_set = "documents_cs - Test.lst";
-        String run_type = "run-0_cs";
+        // Getting parameters from args
+        String topic_set = args[0];
+        String document_set = args[1];
+        String run_type = args[2];
+        String output_file = args[3];
 
         // Extract and process topics
         Topics topic_collection = new Topics(topic_set, run_type);
