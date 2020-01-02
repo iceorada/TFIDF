@@ -1,4 +1,6 @@
-//package ir;
+package ir;
+
+import ir.Corpus;
 
 import java.util.HashMap;
 import java.util.Set;

@@ -1,3 +1,4 @@
+import ir.Doc;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -115,7 +116,7 @@ public class Topics {
 
     public boolean isContain(String term){
         for(Doc currentDoc : docs){
-            if (currentDoc.getTermFreq(term) > 0){
+            if (currentDoc.getTermFrequency(term) > 0){
                 return true;
             }
         }
