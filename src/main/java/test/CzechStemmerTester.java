@@ -1,3 +1,5 @@
+package test;
+
 import stemmer.CzechStemmerAgressive;
 import stemmer.CzechStemmerLight;
 
