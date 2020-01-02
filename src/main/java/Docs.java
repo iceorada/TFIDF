@@ -96,7 +96,7 @@ public class Docs {
                                     String childValue = castedChild.getTextContent();
 
                                     if (temp_Document != null) {
-                                        temp_Document.setTermFreq(childValue, extractRunNo(run_type), extractLanguage(run_type));
+                                        temp_Document.setTermFrequency(childValue, extractRunNo(run_type), extractLanguage(run_type));
                                     }
                                 }
                             }

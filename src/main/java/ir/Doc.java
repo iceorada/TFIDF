@@ -1,5 +1,11 @@
 package ir;
 
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import pipeline.Pipeline;
+import stemmer.CzechStemmerAgressive;
+
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.*;
@@ -15,36 +21,44 @@ public class Doc implements Comparable<Doc> {
         termFreq = new HashMap<String, Integer>();
     }
 
-    public void setTermFreq(String text, int run_Type, String language_code) {
-        Scanner textReader = new Scanner(text);
+    public void setTermFrequency(String text, int run_Type, String language_code) {
+        StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
+        CoreDocument coreDocument = new CoreDocument(text);
+        stanfordCoreNLP.annotate(coreDocument);
+        List<CoreLabel> coreLabelList = coreDocument.tokens();
 
-        while (textReader.hasNext()) {
-            String word = textReader.next();
-            String filteredWord = word.replaceAll("[^A-Za-z0-9]", "");
-//            String filteredWord = word;
+        for (CoreLabel word : coreLabelList) {
+            String originalWord = word.originalText();
+            String lemmaWord  = word.lemma().toLowerCase();
+            String run1_term = "";
 
-            if (!(filteredWord.equalsIgnoreCase(""))) {
-                if (run_Type == 0) {
-                    if (termFreq.containsKey(filteredWord)) {
-                        int oldCount = termFreq.get(filteredWord);
-                        termFreq.put(filteredWord, ++oldCount);
-                    } else {
-                        termFreq.put(filteredWord, 1);
-                    }
-                } else if (run_Type == 1) {
-                    // Change words to lower case
-                    filteredWord = filteredWord.toLowerCase();
+            if (run_Type == 0) {
+                if (termFreq.containsKey(originalWord)) {
+                    int oldCount = termFreq.get(originalWord);
+                    termFreq.put(originalWord, ++oldCount);
+                } else {
+                    termFreq.put(originalWord, 1);
+                }
+            } else if (run_Type == 1) {
 
-                    if (termFreq.containsKey(filteredWord)) {
-                        int oldCount = termFreq.get(filteredWord);
-                        termFreq.put(filteredWord, ++oldCount);
-                    } else {
-                        termFreq.put(filteredWord, 1);
-                    }
+                if(language_code.equalsIgnoreCase("en")){
+                    run1_term = lemmaWord;
+                }else if(language_code.equalsIgnoreCase("cs")){
+                    run1_term = toStemCzech(originalWord);
+                }
+
+                if (termFreq.containsKey(run1_term)) {
+                    int oldCount = termFreq.get(run1_term);
+                    termFreq.put(run1_term, ++oldCount);
+                } else {
+                    termFreq.put(run1_term, 1);
                 }
             }
         }
-        textReader.close();
+    }
+
+    private String toStemCzech(String word){
+        return new CzechStemmerAgressive().stem(word);
     }
 
     public double getTermFrequency(String word) {
@@ -66,7 +80,6 @@ public class Doc implements Comparable<Doc> {
     public Set<String> getTermList() {
         return termFreq.keySet();
     }
-
 
     public int getTotalFreq() {
         int count = 0;
