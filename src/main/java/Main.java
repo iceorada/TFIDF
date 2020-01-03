@@ -35,6 +35,7 @@ public class Main {
         System.out.println("!----- Check -----!");
         System.out.println("There are " + topic_collection.getDocuments().size() + " topics");
         System.out.println("There are " + doc_collection.getDocuments().size() + " documents");
+        System.out.println("Corpus documents: " + corpus.getDocuments().size() + " documents");
 
     }
 }
