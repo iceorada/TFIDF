@@ -86,10 +86,12 @@ public class Docs {
                                     if (!docNo_Value.equalsIgnoreCase(previousDocID)) {
                                         // Create new document object
                                         // Update "previousDocID" with current DOC ID
-                                        temp_docs.add(temp_Document);
-
-                                        // Add document to the inverted index
-                                        corpus.addDocument(temp_Document);
+                                        if (temp_Document != null){
+                                            // Add document to doc collection
+                                            temp_docs.add(temp_Document);
+                                            // Add document to the inverted index
+                                            corpus.addDocument(temp_Document);
+                                        }
 
                                         temp_Document = new Doc(docNo_Value);
                                         previousDocID = docNo_Value;
