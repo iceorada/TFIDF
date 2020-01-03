@@ -1,4 +1,4 @@
-import ir.Doc;
+import ir.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -10,7 +10,7 @@ public class Topics {
     private String document_name;
     private ArrayList<Doc> docs;
 
-    public Topics(String filename, String run_type) {
+    public Topics(Corpus corpus, String filename, String run_type) {
         this.document_name = filename;
         this.docs = extractAndPreprocess(filename, run_type);
     }

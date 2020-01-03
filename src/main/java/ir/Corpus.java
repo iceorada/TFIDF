@@ -29,6 +29,12 @@ public class Corpus {
 	 * It will generate the inverted index based on the documents.
 	 * @param documents the list of documents
 	 */
+
+	public Corpus() {
+		this.documents = documents;
+		invertedIndex = new HashMap<String, Set<Doc>>();
+	}
+
 	public Corpus(ArrayList<Doc> documents) {
 		this.documents = documents;
 		invertedIndex = new HashMap<String, Set<Doc>>();
@@ -54,6 +60,21 @@ public class Corpus {
 					list.add(document);
 					invertedIndex.put(term, list);
 				}
+			}
+		}
+	}
+
+	public void addDocument(Doc document){
+		Set<String> terms = document.getTermList();
+
+		for (String term : terms) {
+			if (invertedIndex.containsKey(term)) {
+				Set<Doc> list = invertedIndex.get(term);
+				list.add(document);
+			} else {
+				Set<Doc> list = new TreeSet<Doc>();
+				list.add(document);
+				invertedIndex.put(term, list);
 			}
 		}
 	}

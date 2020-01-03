@@ -1,3 +1,4 @@
+import ir.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,11 +23,13 @@ public class Main {
         String run_type = args[2];
         String output_file = args[3];
 
+        Corpus corpus = new Corpus();
+
         // Extract and process topics
-        Topics topic_collection = new Topics(topic_set, run_type);
+        Topics topic_collection = new Topics(corpus, topic_set, run_type);
 
         // Extract and process documents
-        Docs doc_collection = new Docs(document_set, run_type);
+        Docs doc_collection = new Docs(corpus, document_set, run_type);
 
         // Traverse collection here to check
         System.out.println("!----- Check -----!");

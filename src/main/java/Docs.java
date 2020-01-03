@@ -1,4 +1,4 @@
-import ir.Doc;
+import ir.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -17,12 +17,12 @@ public class Docs {
     private String document_name;
     private ArrayList<Doc> docs;
 
-    public Docs(String filename, String run_type) {
+    public Docs(Corpus corpus, String filename, String run_type) {
         this.document_name = filename;
-        this.docs = list_to_docName(filename, run_type);
+        this.docs = list_to_docName(corpus, filename, run_type);
     }
 
-    private static ArrayList<Doc> list_to_docName(String list_name, String run_type) {
+    private static ArrayList<Doc> list_to_docName(Corpus corpus, String list_name, String run_type) {
         ArrayList<Doc> documents_list = new ArrayList<>();
         Scanner list_reader = null;
         try {
@@ -35,7 +35,7 @@ public class Docs {
 
                 String path = "documents_" + language_Code + "/" + filename;
 
-                ArrayList<Doc> temp_documents = extract_and_compare(path, run_type);
+                ArrayList<Doc> temp_documents = extract_and_compare(corpus, path, run_type);
 
                 documents_list.addAll(temp_documents);
 
@@ -52,7 +52,7 @@ public class Docs {
         return documents_list;
     }
 
-    private static ArrayList<Doc> extract_and_compare(String path, String run_type){
+    private static ArrayList<Doc> extract_and_compare(Corpus corpus, String path, String run_type){
         ArrayList<Doc> temp_docs = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -87,6 +87,10 @@ public class Docs {
                                         // Create new document object
                                         // Update "previousDocID" with current DOC ID
                                         temp_docs.add(temp_Document);
+
+                                        // Add document to the inverted index
+                                        corpus.addDocument(temp_Document);
+
                                         temp_Document = new Doc(docNo_Value);
                                         previousDocID = docNo_Value;
                                     }
