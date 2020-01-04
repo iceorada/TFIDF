@@ -50,7 +50,7 @@ public class VectorSpaceModel {
 			HashMap<String, Double> weights = new HashMap<String, Double>();
 			
 			for (String term : terms) {
-				double tf = document.getTermFrequency(term);
+				double tf = document.getTermFrequency(term) / document.getTotalFreq();
 				double idf = corpus.getInverseDocumentFrequency(term);
 				
 				double weight = tf * idf;
