@@ -12,10 +12,10 @@ public class Topics {
 
     public Topics(Corpus corpus, String filename, String run_type) {
         this.document_name = filename;
-        this.docs = extractAndPreprocess(filename, run_type);
+        this.docs = extractAndPreprocess(corpus, filename, run_type);
     }
 
-    public static ArrayList<Doc> extractAndPreprocess(String filename, String run_type) {
+    public static ArrayList<Doc> extractAndPreprocess(Corpus corpus, String filename, String run_type) {
         ArrayList<Doc> docs = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -68,6 +68,12 @@ public class Topics {
                 }
                 // Add to document to ArrayList for return
                 docs.add(temp_Document);
+                // Add document to corpus
+                corpus.addDocuments(temp_Document);
+                // Add document to the inverted index
+                corpus.populateInvertedIndex(temp_Document);
+
+                System.out.println("Added topic " + temp_Document.getDocID());
             }
 
         } catch (ParserConfigurationException | IOException | SAXException e) {

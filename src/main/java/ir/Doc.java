@@ -73,10 +73,6 @@ public class Doc implements Comparable<Doc> {
         return docID;
     }
 
-    public void setDocID(String docID) {
-        this.docID = docID;
-    }
-
     public Set<String> getTermList() {
         return termFreq.keySet();
     }

@@ -81,7 +81,6 @@ public class Docs {
                                 // Check for DOCNO using the XML Tags <DOCNO>
                                 if (childTagName.equalsIgnoreCase("docno")) {
                                     String docNo_Value = castedChild.getTextContent();
-                                    System.out.println(docNo_Value);
                                     // Check if it is the start of a new <DOC>
                                     if (!docNo_Value.equalsIgnoreCase(previousDocID)) {
                                         // Create new document object
@@ -89,8 +88,12 @@ public class Docs {
                                         if (temp_Document != null){
                                             // Add document to doc collection
                                             temp_docs.add(temp_Document);
+                                            // Add document to corpus
+                                            corpus.addDocuments(temp_Document);
                                             // Add document to the inverted index
-                                            corpus.addDocument(temp_Document);
+                                            corpus.populateInvertedIndex(temp_Document);
+
+                                            System.out.println("Added document " + temp_Document.getDocID());
                                         }
 
                                         temp_Document = new Doc(docNo_Value);
@@ -98,9 +101,7 @@ public class Docs {
                                     }
                                 } else {
                                     // Add line item into the previous doc i.e. "Dressing to Excess"
-
                                     String childValue = castedChild.getTextContent();
-
                                     if (temp_Document != null) {
                                         temp_Document.setTermFrequency(childValue, extractRunNo(run_type), extractLanguage(run_type));
                                     }

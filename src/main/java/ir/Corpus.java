@@ -31,40 +31,15 @@ public class Corpus {
 	 */
 
 	public Corpus() {
-		this.documents = documents;
+		this.documents = new ArrayList<Doc>();
 		invertedIndex = new HashMap<String, Set<Doc>>();
 	}
 
-	public Corpus(ArrayList<Doc> documents) {
-		this.documents = documents;
-		invertedIndex = new HashMap<String, Set<Doc>>();
-		
-		createInvertedIndex();
-	}
-	
-	/**
-	 * This method will create an inverted index.
-	 */
-	private void createInvertedIndex() {
-		System.out.println("Creating the inverted index");
-		
-		for (Doc document : documents) {
-			Set<String> terms = document.getTermList();
-			
-			for (String term : terms) {
-				if (invertedIndex.containsKey(term)) {
-					Set<Doc> list = invertedIndex.get(term);
-					list.add(document);
-				} else {
-					Set<Doc> list = new TreeSet<Doc>();
-					list.add(document);
-					invertedIndex.put(term, list);
-				}
-			}
-		}
+	public void addDocuments(Doc document){
+		documents.add(document);
 	}
 
-	public void addDocument(Doc document){
+	public void populateInvertedIndex(Doc document){
 		Set<String> terms = document.getTermList();
 
 		for (String term : terms) {
