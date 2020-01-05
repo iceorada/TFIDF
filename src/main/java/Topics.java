@@ -12,10 +12,10 @@ public class Topics {
 
     public Topics(Corpus corpus, String filename, String run_type) {
         this.document_name = filename;
-        this.docs = extractAndPreprocess(corpus, filename, run_type);
+        this.docs = extractAndIndex(corpus, filename, run_type);
     }
 
-    public static ArrayList<Doc> extractAndPreprocess(Corpus corpus, String filename, String run_type) {
+    public static ArrayList<Doc> extractAndIndex(Corpus corpus, String filename, String run_type) {
         ArrayList<Doc> docs = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {

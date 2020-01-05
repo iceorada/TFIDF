@@ -1,4 +1,5 @@
-import ir.*;
+package ir;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -8,59 +9,18 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class Docs {
-    private String document_name;
-    private ArrayList<Doc> docs;
+public class XMLToTxt {
 
-    public Docs(Corpus corpus, String filename, String run_type) {
-        this.document_name = filename;
-        this.docs = list_to_docName(corpus, filename, run_type);
-    }
+    public static void extractAndConvert(String path, String run_type) {
 
-    private static ArrayList<Doc> list_to_docName(Corpus corpus, String list_name, String run_type) {
-        XMLToTxt xmlReader = new XMLToTxt();
-        ArrayList<Doc> documents_list = new ArrayList<>();
-        Scanner list_reader = null;
-        try {
-            String language_Code = extractLanguage(run_type);
-            list_reader = new Scanner(new File(list_name));
-
-            while (list_reader.hasNext()) {
-                String filename = list_reader.next();
-                System.out.println("Extracting " + filename + "...");
-
-                String path = "documents_" + language_Code + "/" + filename;
-
-//                ArrayList<Doc> temp_documents = extractAndIndex(corpus, path, run_type);
-
-                xmlReader.extractAndConvert(path, run_type);
-
-//                documents_list.addAll(temp_documents);
-
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        } finally {
-            if (list_reader != null) {
-                list_reader.close();
-            }
-        }
-        return documents_list;
-    }
-
-    private static ArrayList<Doc> extractAndIndex(Corpus corpus, String path, String run_type){
-        ArrayList<Doc> temp_docs = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = null;
         try {
-            // Get the child from the <DOC> tags
-            DocumentBuilder builder = factory.newDocumentBuilder();
+            builder = factory.newDocumentBuilder();
             Document doc = builder.parse(path);
             NodeList docList = doc.getElementsByTagName("DOC");
             Doc temp_Document = null;
@@ -89,16 +49,9 @@ public class Docs {
                                         // Create new document object
                                         // Update "previousDocID" with current DOC ID
                                         if (temp_Document != null){
-                                            // Add document to doc collection
-                                            temp_docs.add(temp_Document);
-                                            // Add document to corpus
-                                            corpus.addDocuments(temp_Document);
-                                            // Add document to the inverted index
-                                            corpus.populateInvertedIndex(temp_Document);
-
-                                            System.out.println("Added document " + temp_Document.getDocID());
+                                            // Convert document into file of words
+                                            temp_Document.convertToFile();
                                         }
-
                                         temp_Document = new Doc(docNo_Value);
                                         previousDocID = docNo_Value;
                                     }
@@ -115,20 +68,17 @@ public class Docs {
 
                 }
             }
-        } catch (ParserConfigurationException | IOException e) {
+
+
+        } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (SAXException e) {
-            System.out.println("Document " + path + " is not formated properly.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
-
-
-        return temp_docs;
-    }
-
-    public ArrayList<Doc> getDocuments() {
-        return docs;
     }
 
     private static String extractLanguage(String run_type) throws Exception {

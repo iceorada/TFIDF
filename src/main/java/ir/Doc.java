@@ -6,6 +6,10 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import pipeline.Pipeline;
 import stemmer.CzechStemmerAgressive;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.*;
@@ -29,7 +33,7 @@ public class Doc implements Comparable<Doc> {
 
         for (CoreLabel word : coreLabelList) {
             String originalWord = word.originalText();
-            String lemmaWord  = word.lemma().toLowerCase();
+            String lemmaWord = word.lemma().toLowerCase();
             String run1_term = "";
 
             if (run_Type == 0) {
@@ -41,9 +45,9 @@ public class Doc implements Comparable<Doc> {
                 }
             } else if (run_Type == 1) {
 
-                if(language_code.equalsIgnoreCase("en")){
+                if (language_code.equalsIgnoreCase("en")) {
                     run1_term = lemmaWord;
-                }else if(language_code.equalsIgnoreCase("cs")){
+                } else if (language_code.equalsIgnoreCase("cs")) {
                     run1_term = toStemCzech(originalWord);
                 }
 
@@ -57,7 +61,36 @@ public class Doc implements Comparable<Doc> {
         }
     }
 
-    private String toStemCzech(String word){
+    public void convertToFile() {
+        String textToWrite = "";
+        OutputStream writer = null;
+
+        try {
+            writer = new FileOutputStream(new File("data/" + docID + ".txt"));
+            for (String text : getTermList()) {
+                for (int i = 0; i < getTermFrequency(text); i++) {
+                    textToWrite += text + " ";
+                }
+                textToWrite += "\r\n";
+            }
+            writer.write(textToWrite.getBytes(), 0, textToWrite.length());
+            System.out.println("Written to " + "data/" + docID + ".txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private String toStemCzech(String word) {
         return new CzechStemmerAgressive().stem(word);
     }
 

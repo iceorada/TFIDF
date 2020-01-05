@@ -20,35 +20,35 @@ public class Main {
         Corpus corpus = new Corpus();
 
         // Extract and process topics
-        Topics topic_collection = new Topics(corpus, topic_set, run_type);
+//        Topics topic_collection = new Topics(corpus, topic_set, run_type);
 
         // Extract and process documents
         Docs doc_collection = new Docs(corpus, document_set, run_type);
-
-        ArrayList<Doc> processingList = new ArrayList<>();
-        processingList.addAll(topic_collection.getDocuments());
-        processingList.addAll(doc_collection.getDocuments());
-
-        // Traverse collection here to check
-        System.out.println("!----- Check -----!");
-        System.out.println("There are " + topic_collection.getDocuments().size() + " topics");
-        System.out.println("There are " + doc_collection.getDocuments().size() + " documents");
-        System.out.println("Corpus documents: " + corpus.getDocuments().size() + " documents");
-        System.out.println("Corpus words: " + corpus.getInvertedIndex().size() + " words");
-
-        VectorSpaceModel vectorSpace = new VectorSpaceModel(corpus);
-
-        // Sort relevance score in Desc order
-        Map<Double, ArrayList<String>> sortedCosineCollection = new TreeMap<>(Collections.reverseOrder());
-
-        for (Doc doc : doc_collection.getDocuments()) {
-            for (Doc topic : topic_collection.getDocuments()) {
-                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(topic.getDocID(), doc.getDocID()));
-                sortedCosineCollection.put(vectorSpace.cosineSimilarity(topic, doc), cosineSimilarityPair);
-            }
-        }
-
-        writeToFile(sortedCosineCollection, output_file);
+//
+//        ArrayList<Doc> processingList = new ArrayList<>();
+//        processingList.addAll(topic_collection.getDocuments());
+//        processingList.addAll(doc_collection.getDocuments());
+//
+//        // Traverse collection here to check
+//        System.out.println("!----- Check -----!");
+//        System.out.println("There are " + topic_collection.getDocuments().size() + " topics");
+//        System.out.println("There are " + doc_collection.getDocuments().size() + " documents");
+//        System.out.println("Corpus documents: " + corpus.getDocuments().size() + " documents");
+//        System.out.println("Corpus words: " + corpus.getInvertedIndex().size() + " words");
+//
+//        VectorSpaceModel vectorSpace = new VectorSpaceModel(corpus);
+//
+//        // Sort relevance score in Desc order
+//        Map<Double, ArrayList<String>> sortedCosineCollection = new TreeMap<>(Collections.reverseOrder());
+//
+//        for (Doc doc : doc_collection.getDocuments()) {
+//            for (Doc topic : topic_collection.getDocuments()) {
+//                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(topic.getDocID(), doc.getDocID()));
+//                sortedCosineCollection.put(vectorSpace.cosineSimilarity(topic, doc), cosineSimilarityPair);
+//            }
+//        }
+//
+//        writeToFile(sortedCosineCollection, output_file);
     }
 
     private static void writeToFile(Map map, String output_Filename) {
