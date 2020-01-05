@@ -8,8 +8,8 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 
 public class LuceneTester {
-    String indexDir = "C:\\Users\\keith\\Desktop\\Exchange Modules\\3) Information Retreival\\Assignment 2 Package\\TF-IDF Master\\index";
-    String dataDir = "C:\\Users\\keith\\Desktop\\Exchange Modules\\3) Information Retreival\\Assignment 2 Package\\TF-IDF Master\\data";
+    String indexDir = "index";
+    String dataDir = "data";
     Indexer indexer;
     Searcher searcher;
 
