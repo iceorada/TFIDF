@@ -50,7 +50,8 @@ public class Main {
         for (Topic currentTopic : topic_collection.getDocuments()) {
             String topicID = currentTopic.getTopicID();
             String title = currentTopic.getTitle();
-            foundDocs = luceneReader.searchInContent(title, searcher);
+            String filteredTitle = title.replaceAll("[^A-Za-z0-9]", " ");
+            foundDocs = luceneReader.searchInContent(filteredTitle, searcher);
 
             //Save score to map
             for (ScoreDoc scoreDoc : foundDocs.scoreDocs) {
@@ -71,8 +72,6 @@ public class Main {
     private static void run_1(String topic_set, String document_set, String run_type, String output_file) throws Exception {
         Similarity similarity = new BM25Similarity();
 
-        Corpus corpus = new Corpus();
-
         // Extract and index topics
         Topics topic_collection = new Topics(topic_set, run_type);
 
@@ -91,7 +90,8 @@ public class Main {
         for (Topic currentTopic : topic_collection.getDocuments()) {
             String topicID = currentTopic.getTopicID();
             String title = currentTopic.getTitle();
-            foundDocs = luceneReader.searchInContent(title, searcher);
+            String filteredTitle = title.replaceAll("[^A-Za-z0-9]", " ");
+            foundDocs = luceneReader.searchInContent(filteredTitle, searcher);
 
             //Save score to map
             for (ScoreDoc scoreDoc : foundDocs.scoreDocs) {
