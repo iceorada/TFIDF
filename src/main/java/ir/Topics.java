@@ -11,26 +11,26 @@ import java.util.ArrayList;
 
 public class Topics {
     private String document_name;
-    private ArrayList<Doc> docs;
+    private ArrayList<Topic> topics;
 
     public Topics(String filename, String run_type) throws Exception {
         this.document_name = filename;
         Stopwords stopwords = null;
         if (Utility.extractRunNo(run_type) == 1) {
-            stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
+            stopwords = new Stopwords("stopwords/stopwords-" + Utility.extractLanguage(run_type) + ".txt");
         }
-        this.docs = extractAndIndex(filename, run_type, stopwords);
+        this.topics = extractAndIndex(filename, run_type, stopwords);
     }
 
-    public static ArrayList<Doc> extractAndIndex(String filename, String run_type, Stopwords stopwords) {
-        ArrayList<Doc> docs = new ArrayList<>();
+    public static ArrayList<Topic> extractAndIndex(String filename, String run_type, Stopwords stopwords) {
+        ArrayList<Topic> topics = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
             // Get the child from the <TOP> tags
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(filename);
             NodeList docList = doc.getElementsByTagName("top");
-            Doc temp_Document = null;
+            Topic temp_Topic = null;
 
             for (int i = 0; i < docList.getLength(); i++) {
                 Node currentTopic = docList.item(i);
@@ -56,16 +56,15 @@ public class Topics {
                                     // Create new document object
                                     // Update "previousTopicNum" with current topic num
 
-                                    temp_Document = new Doc(topicNum_Value);
+                                    temp_Topic = new Topic(topicNum_Value);
                                     previousTopicNum = topicNum_Value;
                                 }
                             } else {
                                 // Add title into the previous doc i.e. "Euro Inflation"
                                 if (castedChild.getTagName().equalsIgnoreCase("title")) {
                                     String childValue = castedChild.getTextContent();
-                                    if (temp_Document != null) {
-
-                                        temp_Document.setTermFrequency(childValue, Utility.extractRunNo(run_type), Utility.extractLanguage(run_type), stopwords);
+                                    if (temp_Topic != null) {
+                                        temp_Topic.setTitle(childValue);
                                     }
                                 }
                             }
@@ -75,9 +74,9 @@ public class Topics {
 
                 }
                 // Add to document to ArrayList for return
-                docs.add(temp_Document);
+                topics.add(temp_Topic);
 
-                System.out.println("Indexed topic " + temp_Document.getDocID());
+                System.out.println("Indexed topic " + temp_Topic.getTopicID());
             }
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -86,22 +85,22 @@ public class Topics {
             System.out.println(e.getMessage());
         }
 
-        return docs;
+        return topics;
     }
 
-    public ArrayList<Doc> getDocuments() {
-        return docs;
+    public ArrayList<Topic> getDocuments() {
+        return topics;
     }
 
-    public void setDocuments(ArrayList<Doc> documents) {
-        this.docs = documents;
+    public void setDocuments(ArrayList<Topic> documents) {
+        this.topics = documents;
     }
 
     @Override
     public String toString() {
         String message = "Document Name: " + document_name + "\n";
-        for (Doc doc : docs) {
-            message += doc + "\n";
+        for (Topic topic : topics) {
+            message += topic + "\n";
         }
         message += "\n";
         return message;

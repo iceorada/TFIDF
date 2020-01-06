@@ -47,15 +47,16 @@ public class Main {
 
         TopDocs foundDocs = null;
         //Search indexed contents using search term
-        for (Doc currentTopic : topic_collection.getDocuments()) {
-            String title = currentTopic.getDocID();
+        for (Topic currentTopic : topic_collection.getDocuments()) {
+            String topicID = currentTopic.getTopicID();
+            String title = currentTopic.getTitle();
             foundDocs = luceneReader.searchInContent(title, searcher);
 
             //Save score to map
             for (ScoreDoc scoreDoc : foundDocs.scoreDocs) {
                 Document luceneDoc = searcher.doc(scoreDoc.doc);
                 //Save here
-                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(title, luceneDoc.get("docID")));
+                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(topicID, luceneDoc.get("docID")));
                 sortedCollection.put(scoreDoc.score, cosineSimilarityPair);
             }
 
@@ -87,15 +88,16 @@ public class Main {
 
         TopDocs foundDocs = null;
         //Search indexed contents using search term
-        for (Doc currentTopic : topic_collection.getDocuments()) {
-            String title = currentTopic.getDocID();
+        for (Topic currentTopic : topic_collection.getDocuments()) {
+            String topicID = currentTopic.getTopicID();
+            String title = currentTopic.getTitle();
             foundDocs = luceneReader.searchInContent(title, searcher);
 
             //Save score to map
             for (ScoreDoc scoreDoc : foundDocs.scoreDocs) {
                 Document luceneDoc = searcher.doc(scoreDoc.doc);
                 //Save here
-                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(title, luceneDoc.get("docID")));
+                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(topicID, luceneDoc.get("docID")));
                 sortedCollection.put(scoreDoc.score, cosineSimilarityPair);
             }
 

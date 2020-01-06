@@ -30,7 +30,7 @@ public class Docs {
         this.document_name = filename;
         Stopwords stopwords = null;
         if (Utility.extractRunNo(run_type) == 1) {
-            stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
+            stopwords = new Stopwords("stopwords/stopwords-" + Utility.extractLanguage(run_type) + ".txt");
         }
         listToLuceneDocuments(filename, run_type, stopwords, similarity);
     }

@@ -35,14 +35,14 @@ public class Utility {
         int counter = 0;
         OutputStream writer = null;
 
-        Set<Double> keySet = map.keySet();
+        Set<Float> keySet = map.keySet();
 
         System.out.print("Writing to file...");
 
         try {
             writer = new FileOutputStream(new File("results/" + output_Filename));
 
-            for (Double key : keySet) {
+            for (Float key : keySet) {
 
                 // Limit to top 1000 results
                 if (counter >= TOP_RESULTS) {
