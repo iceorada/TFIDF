@@ -11,19 +11,19 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
-public class XMLToTxt {
+public class LuceneDocumentIndexer {
 
-    public static void extractAndConvert(String path, String run_type) {
-
+    public static ArrayList<org.apache.lucene.document.Document> extractAndIndex(String path, String run_type, Stopwords stopwords) {
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
+        ArrayList<org.apache.lucene.document.Document> luceneDocuments = new ArrayList<>();
         try {
-            builder = factory.newDocumentBuilder();
+            // Get the child from the <DOC> tags
+            DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(path);
             NodeList docList = doc.getElementsByTagName("DOC");
-            Doc temp_Document = null;
+            Doc temp_Doc = null;
+            org.apache.lucene.document.Document luceneDocument = null;
 
             for (int i = 0; i < docList.getLength(); i++) {
                 Node currentDoc = docList.item(i);
@@ -48,18 +48,20 @@ public class XMLToTxt {
                                     if (!docNo_Value.equalsIgnoreCase(previousDocID)) {
                                         // Create new document object
                                         // Update "previousDocID" with current DOC ID
-                                        if (temp_Document != null){
-                                            // Convert document into file of words
-                                            temp_Document.convertToFile();
+                                        if (temp_Doc != null) {
+                                            luceneDocument = temp_Doc.convertToLuceneDocument();
+                                            luceneDocuments.add(luceneDocument);
+                                            System.out.println("Converted " + luceneDocument.get("docID"));
                                         }
-                                        temp_Document = new Doc(docNo_Value);
+
+                                        temp_Doc = new Doc(docNo_Value);
                                         previousDocID = docNo_Value;
                                     }
                                 } else {
                                     // Add line item into the previous doc i.e. "Dressing to Excess"
                                     String childValue = castedChild.getTextContent();
-                                    if (temp_Document != null) {
-                                        temp_Document.setTermFrequency(childValue, extractRunNo(run_type), extractLanguage(run_type));
+                                    if (temp_Doc != null) {
+                                        temp_Doc.setTermFrequency(childValue, extractRunNo(run_type), extractLanguage(run_type), stopwords);
                                     }
                                 }
                             }
@@ -68,17 +70,14 @@ public class XMLToTxt {
 
                 }
             }
-
-
-        } catch (ParserConfigurationException e) {
+        } catch (ParserConfigurationException | IOException e) {
             e.printStackTrace();
         } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Document " + path + " is not formated properly.");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
+        return luceneDocuments;
     }
 
     private static String extractLanguage(String run_type) throws Exception {

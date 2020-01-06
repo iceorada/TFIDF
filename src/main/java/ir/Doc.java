@@ -3,19 +3,14 @@ package ir;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreDocument;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import lucene.LuceneWriter;
+import org.apache.lucene.document.Document;
 import pipeline.Pipeline;
 import stemmer.CzechStemmerAgressive;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.*;
 
 public class Doc implements Comparable<Doc> {
-
+    private static final String INDEX_DIR = "index";
     private String docID;
     private HashMap<String, Integer> termFreq;
 
@@ -25,7 +20,7 @@ public class Doc implements Comparable<Doc> {
         termFreq = new HashMap<String, Integer>();
     }
 
-    public void setTermFrequency(String text, int run_Type, String language_code) {
+    public void setTermFrequency(String text, int run_Type, String language_code, Stopwords stopwords) {
         StanfordCoreNLP stanfordCoreNLP = Pipeline.getPipeline();
         CoreDocument coreDocument = new CoreDocument(text);
         stanfordCoreNLP.annotate(coreDocument);
@@ -51,43 +46,35 @@ public class Doc implements Comparable<Doc> {
                     run1_term = toStemCzech(originalWord);
                 }
 
-                if (termFreq.containsKey(run1_term)) {
-                    int oldCount = termFreq.get(run1_term);
-                    termFreq.put(run1_term, ++oldCount);
-                } else {
-                    termFreq.put(run1_term, 1);
+                run1_term = run1_term.toLowerCase();
+
+                if (!stopwords.isExist(run1_term)) {
+                    if (termFreq.containsKey(run1_term)) {
+                        int oldCount = termFreq.get(run1_term);
+                        termFreq.put(run1_term, ++oldCount);
+                    } else {
+                        termFreq.put(run1_term, 1);
+                    }
                 }
             }
         }
     }
 
-    public void convertToFile() {
+    public Document convertToLuceneDocument() {
         String textToWrite = "";
-        OutputStream writer = null;
+        Document luceneDocument;
 
-        try {
-            writer = new FileOutputStream(new File("data/" + docID + ".txt"));
-            for (String text : getTermList()) {
-                for (int i = 0; i < getTermFrequency(text); i++) {
-                    textToWrite += text + " ";
-                }
-                textToWrite += "\r\n";
+        for (String text : getTermList()) {
+            for (int i = 0; i < getTermFrequency(text); i++) {
+                textToWrite += text + " ";
             }
-            writer.write(textToWrite.getBytes(), 0, textToWrite.length());
-            System.out.println("Written to " + "data/" + docID + ".txt");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            textToWrite += "\r\n";
         }
+        luceneDocument = LuceneWriter.createDocument(docID, textToWrite);
 
+//        System.out.println("Written to " + "data/" + docID + ".txt");
 
+        return luceneDocument;
     }
 
     private String toStemCzech(String word) {
@@ -112,7 +99,7 @@ public class Doc implements Comparable<Doc> {
 
     public int getTotalFreq() {
         int count = 0;
-        for (Entry<String, Integer> frequency : termFreq.entrySet()) {
+        for (Map.Entry<String, Integer> frequency : termFreq.entrySet()) {
             count += frequency.getValue();
         }
         return count;
@@ -120,7 +107,7 @@ public class Doc implements Comparable<Doc> {
 
     public String toString() {
         String message = "Doc ID: " + docID + "\n";
-        for (Entry<String, Integer> frequency : termFreq.entrySet()) {
+        for (Map.Entry<String, Integer> frequency : termFreq.entrySet()) {
             message += frequency.getKey() + " = " + frequency.getValue() + "\n";
         }
         return message;

@@ -1,6 +1,7 @@
 import ir.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+import utility.Utility;
 
 import javax.xml.parsers.*;
 import java.io.IOException;
@@ -10,12 +11,16 @@ public class Topics {
     private String document_name;
     private ArrayList<Doc> docs;
 
-    public Topics(Corpus corpus, String filename, String run_type) {
+    public Topics(Corpus corpus, String filename, String run_type) throws Exception {
         this.document_name = filename;
-        this.docs = extractAndIndex(corpus, filename, run_type);
+        Stopwords stopwords = null;
+        if (Utility.extractRunNo(run_type) == 1) {
+            stopwords = new Stopwords("stopwords_" + Utility.extractLanguage(run_type) + ".txt");
+        }
+        this.docs = extractAndIndex(corpus, filename, run_type, stopwords);
     }
 
-    public static ArrayList<Doc> extractAndIndex(Corpus corpus, String filename, String run_type) {
+    public static ArrayList<Doc> extractAndIndex(Corpus corpus, String filename, String run_type, Stopwords stopwords) {
         ArrayList<Doc> docs = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -57,7 +62,8 @@ public class Topics {
                                 if (castedChild.getTagName().equalsIgnoreCase("title")) {
                                     String childValue = castedChild.getTextContent();
                                     if (temp_Document != null) {
-                                        temp_Document.setTermFrequency(childValue, extractRunNo(run_type), extractLanguage(run_type));
+
+                                        temp_Document.setTermFrequency(childValue, Utility.extractRunNo(run_type), Utility.extractLanguage(run_type), stopwords);
                                     }
                                 }
                             }
@@ -83,25 +89,6 @@ public class Topics {
         }
 
         return docs;
-    }
-
-    private static String extractLanguage(String run_type) throws Exception {
-        int start = run_type.indexOf('_');
-        int end = run_type.length();
-
-        if (run_type.substring(start + 1, end).length() < 2) {
-            throw new Exception("Language not found");
-        }
-
-        return run_type.substring(start + 1, end);
-    }
-
-    private static int extractRunNo(String runType) {
-        int start = runType.indexOf('-');
-        int end = runType.length() - 3;
-        String s = runType.substring(start + 1, end);
-
-        return Integer.parseInt(s);
     }
 
     public ArrayList<Doc> getDocuments() {

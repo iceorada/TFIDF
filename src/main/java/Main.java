@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         // Getting parameters from args
         String topic_set = args[0];
@@ -20,11 +20,11 @@ public class Main {
         Corpus corpus = new Corpus();
 
         // Extract and process topics
-//        Topics topic_collection = new Topics(corpus, topic_set, run_type);
+        Topics topic_collection = new Topics(corpus, topic_set, run_type);
 
         // Extract and process documents
-        Docs doc_collection = new Docs(corpus, document_set, run_type);
-//
+        Docs doc_collection = new Docs(document_set, run_type);
+
 //        ArrayList<Doc> processingList = new ArrayList<>();
 //        processingList.addAll(topic_collection.getDocuments());
 //        processingList.addAll(doc_collection.getDocuments());
