@@ -15,7 +15,7 @@ public class Topics {
         this.document_name = filename;
         Stopwords stopwords = null;
         if (Utility.extractRunNo(run_type) == 1) {
-            stopwords = new Stopwords("stopwords_" + Utility.extractLanguage(run_type) + ".txt");
+            stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
         }
         this.docs = extractAndIndex(corpus, filename, run_type, stopwords);
     }

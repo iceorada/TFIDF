@@ -7,6 +7,12 @@
     <groupId>org.example</groupId>
     <artifactId>TF-IDF Master</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lucene.version>6.6.0</lucene.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <stanford.nlp.version>3.9.2</stanford.nlp.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -19,47 +25,50 @@
             </plugin>
         </plugins>
     </build>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
     <dependencies>
+
+        <!-- START - stanford.nlp Dependencies -->
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>3.9.2</version>
+            <version>${stanford.nlp.version}</version>
         </dependency>
         <dependency>
             <groupId>edu.stanford.nlp</groupId>
             <artifactId>stanford-corenlp</artifactId>
-            <version>3.9.2</version>
+            <version>${stanford.nlp.version}</version>
             <classifier>models</classifier>
         </dependency>
+        <!-- END - stanford.nlp Dependencies -->
+
+        <!-- START - slf4j Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
+        <!-- END - slf4j Dependencies -->
 
         <!-- START - Lucene Dependencies -->
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-core</artifactId>
-            <version>3.6.2/version>
+            <version>${lucene.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-analyzers-common</artifactId>
-            <version>3.6.2</version>
+            <version>${lucene.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.lucene</groupId>
             <artifactId>lucene-queryparser</artifactId>
-            <version>3.6.2</version>
+            <version>${lucene.version}</version>
         </dependency>
         <!-- END - Lucene Dependencies -->
     </dependencies>

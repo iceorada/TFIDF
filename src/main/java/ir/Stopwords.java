@@ -7,7 +7,7 @@ import java.util.*;
 public class Stopwords {
 
     public static void main(String args[]) {
-        Stopwords stopword_List = new Stopwords("stopwords_en.txt");
+        Stopwords stopword_List = new Stopwords("stopwords-en.txt");
         System.out.println(stopword_List.isExist("Asking"));
         System.out.println(stopword_List);
     }
