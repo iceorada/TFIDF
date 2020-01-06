@@ -7,7 +7,7 @@ import java.util.*;
 public class Stopwords {
 
     public static void main(String args[]) {
-        Stopwords stopword_List = new Stopwords("stopwords-en.txt");
+        Stopwords stopword_List = new Stopwords("stopwords/stopwords-en.txt");
         System.out.println(stopword_List.isExist("Asking"));
         System.out.println(stopword_List);
     }
@@ -36,8 +36,8 @@ public class Stopwords {
     }
 
     public static Boolean isExist(String term) {
-        for (String word : stopwords){
-            if(word.equalsIgnoreCase(term)){
+        for (String word : stopwords) {
+            if (word.equalsIgnoreCase(term)) {
                 return true;
             }
         }
