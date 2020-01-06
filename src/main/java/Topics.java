@@ -11,16 +11,16 @@ public class Topics {
     private String document_name;
     private ArrayList<Doc> docs;
 
-    public Topics(Corpus corpus, String filename, String run_type) throws Exception {
+    public Topics(String filename, String run_type) throws Exception {
         this.document_name = filename;
         Stopwords stopwords = null;
         if (Utility.extractRunNo(run_type) == 1) {
             stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
         }
-        this.docs = extractAndIndex(corpus, filename, run_type, stopwords);
+        this.docs = extractAndIndex(filename, run_type, stopwords);
     }
 
-    public static ArrayList<Doc> extractAndIndex(Corpus corpus, String filename, String run_type, Stopwords stopwords) {
+    public static ArrayList<Doc> extractAndIndex(String filename, String run_type, Stopwords stopwords) {
         ArrayList<Doc> docs = new ArrayList<>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         try {
@@ -74,10 +74,6 @@ public class Topics {
                 }
                 // Add to document to ArrayList for return
                 docs.add(temp_Document);
-                // Add document to corpus
-                corpus.addDocuments(temp_Document);
-                // Add document to the inverted index
-                corpus.populateInvertedIndex(temp_Document);
 
                 System.out.println("Added topic " + temp_Document.getDocID());
             }
