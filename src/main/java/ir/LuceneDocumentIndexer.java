@@ -51,7 +51,7 @@ public class LuceneDocumentIndexer {
                                         if (temp_Doc != null) {
                                             luceneDocument = temp_Doc.convertToLuceneDocument();
                                             luceneDocuments.add(luceneDocument);
-                                            System.out.println("Converted " + luceneDocument.get("docID"));
+                                            System.out.println("Index:" + luceneDocument.get("docID"));
                                         }
 
                                         temp_Doc = new Doc(docNo_Value);

@@ -1,3 +1,5 @@
+package ir;
+
 import ir.*;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -75,7 +77,7 @@ public class Topics {
                 // Add to document to ArrayList for return
                 docs.add(temp_Document);
 
-                System.out.println("Added topic " + temp_Document.getDocID());
+                System.out.println("Indexed topic " + temp_Document.getDocID());
             }
 
         } catch (ParserConfigurationException | IOException | SAXException e) {
@@ -93,23 +95,6 @@ public class Topics {
 
     public void setDocuments(ArrayList<Doc> documents) {
         this.docs = documents;
-    }
-
-    public int getTotalFreq() {
-        int totalCount = 0;
-        for (Doc doc : docs) {
-            totalCount += doc.getTotalFreq();
-        }
-        return totalCount;
-    }
-
-    public boolean isContain(String term){
-        for(Doc currentDoc : docs){
-            if (currentDoc.getTermFrequency(term) > 0){
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

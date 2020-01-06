@@ -41,7 +41,7 @@ public class Main {
         LuceneReader luceneReader = new LuceneReader();
         Map<Float, ArrayList<String>> sortedCollection = new TreeMap<>(Collections.reverseOrder());
 
-        //Create lucene searcher. It search over a single IndexReader using BM25Similarity
+        //Create lucene searcher. It search over a single IndexReader using ClassicSimilarity
         IndexSearcher searcher = luceneReader.createSearcher(similarity);
 
 

@@ -1,3 +1,5 @@
+package ir;
+
 import ir.*;
 import lucene.LuceneWriter;
 import org.apache.lucene.index.IndexWriter;
@@ -44,7 +46,7 @@ public class Docs {
 
             while (list_reader.hasNext()) {
                 String filename = list_reader.next();
-                System.out.println("Extracting " + filename + "...");
+                System.out.println("Extracting from " + filename + "...");
 
                 String path = "documents_" + language_Code + "/" + filename;
 
