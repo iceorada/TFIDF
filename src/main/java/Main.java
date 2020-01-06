@@ -1,4 +1,13 @@
 import ir.*;
+import lucene.LuceneReader;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
+import org.apache.lucene.search.similarities.Similarity;
+import utility.Utility;
 
 import javax.swing.*;
 import java.io.File;
@@ -17,6 +26,15 @@ public class Main {
         String run_type = args[2];
         String output_file = args[3];
 
+
+        if (Utility.extractRunNo(run_type) == 0) {
+            run_0(topic_set, document_set, run_type, output_file);
+        } else if (Utility.extractRunNo(run_type) == 1) {
+            run_1(topic_set, document_set, run_type, output_file);
+        }
+    }
+
+    private static void run_0(String topic_set, String document_set, String run_type, String output_file) throws Exception {
         Corpus corpus = new Corpus();
 
         // Extract and process topics
@@ -51,54 +69,45 @@ public class Main {
 //        writeToFile(sortedCosineCollection, output_file);
     }
 
-    private static void writeToFile(Map map, String output_Filename) {
-        final int TOP_RESULTS = 1000;
-        String stringToBeStored = "";
-        int counter = 0;
-        OutputStream writer = null;
+    private static void run_1(String topic_set, String document_set, String run_type, String output_file) throws Exception {
+        Similarity similarity = new BM25Similarity();
 
-        Set<Double> keySet = map.keySet();
+        Corpus corpus = new Corpus();
 
-        System.out.println("Writing to file...");
+        // Extract and index topics
+        Topics topic_collection = new Topics(corpus, topic_set, run_type);
 
-        try {
-            writer = new FileOutputStream(new File("results/"+output_Filename));
+        // Extract and index documents
+        new Docs(document_set, run_type, similarity);
 
-            for (Double key : keySet) {
+        LuceneReader luceneReader = new LuceneReader();
+        Map<Float, ArrayList<String>> sortedCollection = new TreeMap<>(Collections.reverseOrder());
 
-                // Limit to top 1000 results
-                if (counter >= TOP_RESULTS) {
-                    return;
-                }
-                ArrayList<String> collection_Value = (ArrayList<String>) map.get(key);
-                stringToBeStored = "";
-                stringToBeStored += collection_Value.get(0) + " 0 " + collection_Value.get(1) + " " + counter + " " + key + " baseline" + "\r\n";
-                writer.write(stringToBeStored.getBytes(), 0, stringToBeStored.length());
-//                System.out.println(stringToBeStored);
-                counter++;
+        //Create lucene searcher. It search over a single IndexReader using BM25Similarity
+        IndexSearcher searcher = luceneReader.createSearcher(similarity);
+
+
+        TopDocs foundDocs = null;
+        //Search indexed contents using search term
+        for (Doc currentTopic : topic_collection.getDocuments()) {
+            String title = currentTopic.getDocID();
+            foundDocs = luceneReader.searchInContent(title, searcher);
+
+            //Save score to map
+            for (ScoreDoc scoreDoc : foundDocs.scoreDocs) {
+                Document luceneDoc = searcher.doc(scoreDoc.doc);
+                //Save here
+                ArrayList cosineSimilarityPair = new ArrayList<>(Arrays.asList(title, luceneDoc.get("docID")));
+                sortedCollection.put(scoreDoc.score, cosineSimilarityPair);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
         }
+
+        //Total found documents
+        System.out.println("Total Results : " + foundDocs.totalHits);
+
+        Utility.writeToFile(sortedCollection, output_file);
     }
 
-    private static void iterateCollection(Map map) {
-        String stringToStore = "";
-        Set<Double> keySet = map.keySet();
 
-        for (Double key : keySet) {
-            ArrayList<String> collection_Value = (ArrayList<String>) map.get(key);
-            stringToStore = "";
-            stringToStore += collection_Value.get(0) + "   " + collection_Value.get(1) + "   " + key;
-            System.out.println(stringToStore);
-        }
-    }
 }

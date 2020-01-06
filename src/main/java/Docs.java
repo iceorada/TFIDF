@@ -1,6 +1,10 @@
 import ir.*;
 import lucene.LuceneWriter;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.similarities.BM25Similarity;
+import org.apache.lucene.search.similarities.ClassicSimilarity;
+import org.apache.lucene.search.similarities.Similarity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,15 +24,6 @@ public class Docs {
     private String document_name;
     private ArrayList<Doc> docs;
 
-    public Docs(String filename, String run_type) throws Exception {
-        this.document_name = filename;
-        Stopwords stopwords = null;
-        if (Utility.extractRunNo(run_type) == 1) {
-            stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
-        }
-        listToLuceneDocuments(filename, run_type, stopwords);
-    }
-
     public Docs(Corpus corpus, String filename, String run_type) throws Exception {
         this.document_name = filename;
         Stopwords stopwords = null;
@@ -36,6 +31,15 @@ public class Docs {
             stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
         }
         this.docs = list_to_docName(corpus, filename, run_type, stopwords);
+    }
+
+    public Docs(String filename, String run_type, Similarity similarity) throws Exception {
+        this.document_name = filename;
+        Stopwords stopwords = null;
+        if (Utility.extractRunNo(run_type) == 1) {
+            stopwords = new Stopwords("stopwords-" + Utility.extractLanguage(run_type) + ".txt");
+        }
+        listToLuceneDocuments(filename, run_type, stopwords, similarity);
     }
 
     private static ArrayList<Doc> list_to_docName(Corpus corpus, String list_name, String run_type, Stopwords stopwords) {
@@ -71,7 +75,7 @@ public class Docs {
         return documents_list;
     }
 
-    private static void listToLuceneDocuments(String list_name, String run_type, Stopwords stopwords) {
+    private static void listToLuceneDocuments(String list_name, String run_type, Stopwords stopwords, Similarity similarity) {
         LuceneDocumentIndexer luceneDocumentIndexer = new LuceneDocumentIndexer();
         ArrayList<org.apache.lucene.document.Document> documents_list = new ArrayList<>();
         ArrayList<org.apache.lucene.document.Document> temp_doc_list;
@@ -91,7 +95,7 @@ public class Docs {
                 documents_list.addAll(temp_doc_list);
             }
 
-            IndexWriter writer = LuceneWriter.createWriter();
+            IndexWriter writer = LuceneWriter.createWriter(similarity);
             writer.deleteAll();
             writer.addDocuments(documents_list);
             writer.commit();

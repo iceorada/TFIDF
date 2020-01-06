@@ -12,6 +12,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.search.similarities.Similarity;
 import org.apache.lucene.store.FSDirectory;
 
 public class LuceneWriter {
@@ -45,6 +46,14 @@ public class LuceneWriter {
     public static IndexWriter createWriter() throws IOException {
         FSDirectory dir = FSDirectory.open(Paths.get(INDEX_DIR));
         IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+        IndexWriter writer = new IndexWriter(dir, config);
+        return writer;
+    }
+
+    public static IndexWriter createWriter(Similarity similarity) throws IOException {
+        FSDirectory dir = FSDirectory.open(Paths.get(INDEX_DIR));
+        IndexWriterConfig config = new IndexWriterConfig(new StandardAnalyzer());
+        config.setSimilarity(similarity);
         IndexWriter writer = new IndexWriter(dir, config);
         return writer;
     }
