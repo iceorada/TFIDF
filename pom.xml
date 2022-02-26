@@ -11,7 +11,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lucene.version>6.6.0</lucene.version>
         <slf4j.version>1.7.25</slf4j.version>
-        <stanford.nlp.version>3.9.2</stanford.nlp.version>
+        <stanford.nlp.version>4.4.0</stanford.nlp.version>
     </properties>
     <build>
         <plugins>
